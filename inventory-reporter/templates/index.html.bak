@@ -1,0 +1,117 @@
+{{define "head"}}<title>Update Inventory</title>{{end}} 
+<h1>Today's Harvest Report</h1>
+  
+<div id="chart" style="height: 400px; width: 400px;">
+    <div id="container"></div>
+</div>
+    
+<script src="https://code.highcharts.com/highcharts.js"></script>
+
+<script>
+window.addEventListener("load", function(evt) {
+     
+     let ws; 
+     let showchart = function(message) { 
+        let div = document.getElementById("data")
+        if (div != null) {
+             div.remove()
+        }
+         
+        div = document.createElement("div");
+        div.setAttribute("id", "data")  
+
+         let produce = JSON.parse(message) 
+   
+        let data = new Array();
+
+        for (i=0; i<produce.items.length; i++) {
+                let items = new Array();
+                items.push(produce.items[i].name);
+                items.push(produce.items[i].qty); 
+                data.push(items)
+        }
+ 
+        // console.log(data)
+
+        let container = document.getElementById("container")
+        if (container != null) {
+            container.remove() 
+            let d = document.createElement("container");
+            d.setAttribute("id", "container");
+            let chart = document.getElementById("chart");
+            chart.appendChild(container); 
+        }
+        draw(data)
+ 
+     };
+   
+     ws = new WebSocket("{{.Host}}");
+       
+     ws.onmessage = function(evt) {
+         //console.log(evt.data)
+         if (evt.data != null && evt.data != "") {
+            showchart(evt.data);
+         }
+         
+     }
+     
+     ws.onerror = function(evt) {
+         console.log("ERROR: " + evt.data);
+     }
+            
+ }); 
+
+ function draw(data) {
+    Highcharts.chart('container', {
+    chart: {
+        type: 'column'
+    },
+    title: {
+        text: 'Today\'s Harvest Report'
+    },
+    subtitle: {
+        text: 'Reported by System77'
+    },
+    xAxis: {
+        type: 'category',
+        labels: {
+            rotation: -45,
+            style: {
+                fontSize: '13px',
+                fontFamily: 'Verdana, sans-serif'
+            }
+        }
+    },
+    yAxis: {
+        min: 0,
+        title: {
+            text: 'Total weights (in lbs)'
+        }
+    },
+    legend: {
+        enabled: false
+    },
+    tooltip: {
+        pointFormat: '<b>{point.y:.1f} lbs</b>'
+    },
+    series: [{
+        name: 'Harvest',
+        data: data, 
+        dataLabels: {
+            enabled: true,
+            rotation: -90,
+            color: '#FFFFFF',
+            align: 'right',
+            format: '{point.y:.0f}', // one decimal
+            y: 10, // 10 pixels down from the top
+            style: {
+                fontSize: '13px',
+                fontFamily: 'Verdana, sans-serif'
+            }
+        }
+    }]
+  });
+}
+
+</script> 
+ 

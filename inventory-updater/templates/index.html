@@ -1,0 +1,72 @@
+<h1>Today's harvest</h1>
+<table>
+    <tr>
+        <th>Produce</th>
+        <th>Qty in lbs.</th>
+    </tr>
+</table>
+<table>   
+    <div id="table">
+        <table id="itemstable"></table> 
+    </div> 
+    <tr>
+        <td>
+            <form action="/send" method="post">      
+                <button id="send">Generate data and send</button>
+               </form>
+        </td>   
+    </tr>          
+</table> 
+
+<script>  
+    window.addEventListener("load", function(evt) {
+     
+        let ws;
+    
+        let showdata = function(message) {
+           
+            console.log(message)
+            if (message == null || message == "") {
+                return
+            }
+            
+            let produce = JSON.parse(message)              
+           
+            it = document.getElementById("itemstable")
+            if (it != null) {
+                it.remove()
+            }
+            it = document.createElement("table")
+            it.setAttribute("id", "itemstable")
+
+            t = document.getElementById("table")
+            t.appendChild(it)
+
+            for (i=0; i<produce.items.length; i++) {
+                tr = document.createElement("tr")
+                td1 = document.createElement("td")
+                td1.innerHTML = produce.items[i].name;                
+                tr.appendChild(td1)
+                td2 = document.createElement("td")
+                td2.innerHTML = produce.items[i].qty;                
+                tr.appendChild(td2)
+                it.appendChild(tr) 
+             }             
+        };
+     
+        
+        ws = new WebSocket("{{.Host}}");
+          
+        ws.onmessage = function(evt) {
+            // console.log("RESPONSE: " + evt.data);
+            showdata(evt.data);
+        }
+        
+        ws.onerror = function(evt) {
+            console.log("ERROR: " + evt.data);
+        }
+               
+    });
+</script>
+ 
+

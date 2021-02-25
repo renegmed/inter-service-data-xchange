@@ -1,0 +1,142 @@
+{{define "head"}}<title>Update Inventory</title>{{end}} 
+<h1>Today's Harvest Report</h1>
+  
+<div id="chart" style="height: 800px; width: 400px;">
+    <div id="container"></div>
+</div>
+   
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/data.js"></script>
+<script src="https://code.highcharts.com/modules/drilldown.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/modules/export-data.js"></script>
+<script src="https://code.highcharts.com/modules/accessibility.js"></script>
+
+<script>
+window.addEventListener("load", function(evt) {
+     
+     let ws; 
+     let showchart = function(message) { 
+        let div = document.getElementById("data")
+        if (div != null) {
+             div.remove()
+        }
+         
+        div = document.createElement("div");
+        div.setAttribute("id", "data")  
+
+        let produce = JSON.parse(message) 
+   
+        // console.log(produce)
+
+        let mainData = new Array();
+        let drilldownData = new Array();
+       
+        for (i=0; i<produce.items.length; i++) {
+ 
+                ddata = new Array()
+                for (j=0; j<produce.items[i].itemLocations.length; j++) {
+                    iloc = new Array()
+                    iloc.push(produce.items[i].itemLocations[j].locationName)
+                    iloc.push(produce.items[i].itemLocations[j].qty)
+                    //console.log("iloc - ", iloc)
+                    ddata.push(iloc)
+                    //console.log("ddata - ", ddata)
+                }
+                item = {name:produce.items[i].name, y:produce.items[i].qty, drilldown:produce.items[i].name}
+                mainData.push(item)
+
+                drilldown = {name:produce.items[i].name, id:produce.items[i].name, data:ddata}
+                drilldownData.push(drilldown)
+
+        }
+ 
+        //console.log(mainData)
+        //console.log("--------")
+        //console.log(drilldownData)
+        let container = document.getElementById("container")
+        if (container != null) {
+            container.remove() 
+            let d = document.createElement("container");
+            d.setAttribute("id", "container");
+            let chart = document.getElementById("chart");
+            chart.appendChild(container); 
+        }
+        draw(produce.reportDate, mainData, drilldownData)
+ 
+     };
+   
+     ws = new WebSocket("{{.Host}}");
+       
+     ws.onmessage = function(evt) {
+         //console.log(evt.data)
+         if (evt.data != null && evt.data != "") {
+            showchart(evt.data);
+         }
+         
+     }
+     
+     ws.onerror = function(evt) {
+         console.log("ERROR: " + evt.data);
+     }
+            
+ }); 
+
+ function draw(reportDate, mainData,drilldownData) {
+    Highcharts.chart('container', {
+    chart: {
+        type: 'column'
+    },
+    title: {
+        text: 'Today\'s Harvest Report'
+    },
+    subtitle: {
+        text: 'Report date: ' + reportDate
+    },
+    accessibility: {
+        announceNewData: {
+            enabled: true
+        }
+    },
+    xAxis: {
+        type: 'category'
+    },
+    yAxis: {
+        title: {
+            text: 'Total weights (lbs.)'
+        }
+
+    },
+    legend: {
+        enabled: false
+    },
+    plotOptions: {
+        series: {
+            borderWidth: 0,
+            dataLabels: {
+                enabled: true,
+                format: '{point.y:.0f} lbs'
+            }
+        }
+    },
+
+    tooltip: {
+        headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+        pointFormat: '<span style="color:black">{point.name}</span>: <b>{point.y:.0f}</b> lbs.<br/>'
+    },
+
+    series: [
+        {
+            name: "Production",
+            colorByPoint: true,
+            data: mainData, 
+        }
+    ],
+    drilldown: {
+        series: drilldownData         
+    }
+});
+}
+
+</script> 
+ 

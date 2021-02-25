@@ -1,0 +1,19 @@
+Status: working
+
+
+
+The drilldown chart is based on 
+
+https://jsfiddle.net/gh/get/library/pure/highcharts/highcharts/tree/master/samples/highcharts/demo/column-drilldown
+
+
+Makefile commands for local installation 
+
+install:
+	helm install my-nats nats/nats
+	helm install my-stan nats/stan --set stan.nats.url=nats://my-nats:4222
+
+portforward:
+	kubectl port-forward my-nats-0 4222:4222
+
+  
