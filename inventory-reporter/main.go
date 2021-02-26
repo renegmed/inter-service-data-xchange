@@ -52,12 +52,14 @@ func NewServer(URL, clusterID, clientID string, opts []nats.Option) (server, err
 
 	nc, err := nats.Connect(URL, opts...)
 	if err != nil {
+		log.Println("Error on connecting to nats server url", URL, " Message:", err)
 		log.Fatal(err)
 	}
 	s.nc = nc
 
 	sc, err := stan.Connect(clusterID, clientID, stan.NatsConn(nc))
 	if err != nil {
+		log.Println("Error on connecting to stan server url", URL, " Message:", err)
 		log.Fatalf("Can't connect: %v.\nMake sure a NATS Streaming Server is running at: %s", err, URL)
 	}
 	s.sc = sc
@@ -149,6 +151,7 @@ func main() {
 
 	serv, err := NewServer(URL, clusterID, clientID, opts)
 	if err != nil {
+		log.Println("Error on creating new stan server", err)
 		log.Fatal(err)
 	}
 	defer serv.sc.Close()

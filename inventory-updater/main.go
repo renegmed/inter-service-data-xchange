@@ -153,6 +153,7 @@ func init() {
 
 //Render templates for the given name, template definition and data object
 func renderTemplate(w http.ResponseWriter, name string, template string, wshost string) {
+	log.Println("+++ render template name", name, "  template:", template, "  wshost", wshost)
 	// Ensure the template exists in the map.
 	tmpl, ok := templates[name]
 	if !ok {
@@ -174,7 +175,7 @@ func renderTemplate(w http.ResponseWriter, name string, template string, wshost 
 }
 
 func home(w http.ResponseWriter, r *http.Request) {
-	// log.Println("+++ home Host:", r.Host)
+	log.Println("+++ home Host:", r.Host)
 	renderTemplate(w, "index", "base", "ws://"+r.Host+"/data")
 }
 

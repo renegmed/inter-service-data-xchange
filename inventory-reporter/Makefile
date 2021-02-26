@@ -1,5 +1,10 @@
 init-project:
-	go mod init ws-echo-report 
+	go mod init inventory-reporter 
+
+docker:
+
+tohub:
+
 
 build:
 	go build -o report .

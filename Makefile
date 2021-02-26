@@ -4,3 +4,12 @@ install:
 
 portforward:
 	kubectl port-forward my-nats-0 4222:4222
+
+up:
+	docker-compose up -d --build 
+
+pushupdate:
+	docker push renegmedal/updater:latest
+
+pushreport:
+	docker push renegmedal/reporter:latest

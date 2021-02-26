@@ -1,9 +1,9 @@
 init-project:
-	go mod init ws-echo-server 
+	go mod init inventory-updater
 
 build:
-	go build -o server .
+	go build -o updater .
 
 run: build
-	./server --addr localhost:8282 --server localhost:4222 --cluster my-stan --clientid stan-pub 
+	./updater --addr localhost:8282 --server localhost:4222 --cluster my-stan --clientid stan-pub 
 
