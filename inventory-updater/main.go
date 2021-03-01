@@ -25,7 +25,7 @@ import (
 var produces = [...]string{"Eggplant", "Cabbage", "Broccoli", "Lettuce", "Bell Pepper", "Spinach"}
 var locations = [...]string{"ABC Farms", "Fiddler Agri Business", "J and J Veggie Farm", "Acme Farm", "Winslow Cooperative"}
 
-var addr = flag.String("addr", "localhost:8080", "http service address")
+var addr = flag.String("addr", "localhost:8282", "http service address")
 var templates map[string]*template.Template
 var upgrader = websocket.Upgrader{} // use default options
 var ws *websocket.Conn
@@ -57,6 +57,7 @@ func NewServer(URL, clusterID, clientID string, opts []nats.Option) (server, err
 
 	nc, err := nats.Connect(URL, opts...)
 	if err != nil {
+		log.Println("Error on connecting nats: ", err)
 		log.Fatal(err)
 	}
 	s.nc = nc
@@ -206,10 +207,10 @@ func main() {
 		URL       string
 	)
 
-	flag.StringVar(&URL, "s", stan.DefaultNatsURL, "The nats server URLs (separated by comma)")
-	flag.StringVar(&URL, "server", stan.DefaultNatsURL, "The nats server URLs (separated by comma)")
-	flag.StringVar(&clusterID, "c", "test-cluster", "The NATS Streaming cluster ID")
-	flag.StringVar(&clusterID, "cluster", "test-cluster", "The NATS Streaming cluster ID")
+	flag.StringVar(&URL, "s", "localhost:4222", "The nats server URLs (separated by comma)")
+	flag.StringVar(&URL, "server", "localhost:4222", "The nats server URLs (separated by comma)")
+	flag.StringVar(&clusterID, "c", "my-stan", "The NATS Streaming cluster ID")
+	flag.StringVar(&clusterID, "cluster", "my-stan", "The NATS Streaming cluster ID")
 	flag.StringVar(&clientID, "id", "stan-pub", "The NATS Streaming client ID to connect with")
 	flag.StringVar(&clientID, "clientid", "stan-pub", "The NATS Streaming client ID to connect with")
 

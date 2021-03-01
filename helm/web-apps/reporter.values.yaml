@@ -1,0 +1,11 @@
+deployment:
+  image: "renegmedal/reporter"
+  tag: "latest"
+  command: "/root/reporter"
+  addr: localhost:7777 
+  server: my-nats:4222 
+  cluster: my-stan 
+  clientId: stan-sub 
+name: web-reporter
+port: 7878
+targetPort: 7777

@@ -1,0 +1,12 @@
+deployment:
+  image: "renegmedal/updater"
+  tag: "latest"
+  command: "/root/updater"
+  addr: localhost:8282 
+  server: my-nats:4222 
+  cluster: my-stan 
+  clientId: stan-pub 
+name: web-updater
+port: 9090
+targetPort: 8282
+
