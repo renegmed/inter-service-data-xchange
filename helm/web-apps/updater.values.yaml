@@ -2,7 +2,7 @@ deployment:
   image: "renegmedal/updater"
   tag: "latest"
   command: "/root/updater"
-  addr: localhost:8282 
+  addr: 0.0.0.0:8282 
   server: my-nats:4222 
   cluster: my-stan 
   clientId: stan-pub 

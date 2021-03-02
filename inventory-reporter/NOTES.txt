@@ -14,3 +14,9 @@ install:
 
 portforward:
 	kubectl port-forward my-nats-0 4222:4222
+
+
+
+AWS EKS deployment
+
+https://docs.amazonaws.cn/AmazonECR/latest/userguide/push-oci-artifact.html

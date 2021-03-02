@@ -11,15 +11,15 @@ portforward1:
 	kubectl port-forward web-updater-6674b5f9df-xrzf7  9090:8282
 
 test1:
-	helm template web-updater web-updater --values web-updater/updater.values.yaml 
+	helm template web-updater web-apps --values web-apps/updater.values.yaml 
 
 
 install1:
-	helm install web-updater web-updater --values web-updater/updater.values.yaml 
+	helm install web-updater web-apps --values web-apps/updater.values.yaml 
 
 
 upgrade1:
-	helm upgrade web-updater web-updater --values web-updater/updater.values.yaml 
+	helm upgrade web-updater web-apps --values web-apps/updater.values.yaml 
 
 
 inspect1:
@@ -35,18 +35,18 @@ uninstall1:
 
 
 test2:
-	helm template web-reporter web-updater --values web-updater/reporter.values.yaml 
+	helm template web-reporter web-apps --values web-apps/reporter.values.yaml 
 
 
 install2:
-	helm install web-reporter web-updater --values web-updater/reporter.values.yaml 
+	helm install web-reporter web-apps --values web-apps/reporter.values.yaml 
 
 portforward2: 
 	kubectl port-forward web-reporter-6b4d7fcdd9-vjlq4 7878:7777
 
 
 upgrade2:
-	helm upgrade web-reporter web-updater --values web-updater/reporter.values.yaml 
+	helm upgrade web-reporter web-apps --values web-apps/reporter.values.yaml 
 
 
 inspect2:
@@ -57,3 +57,10 @@ inspect2:
 uninstall2:
 	helm uninstall web-reporter
  
+#-------------------------------------------
+
+# package-updater:
+# 	helm package updater web-apps -f web-apps/updater.values.yaml
+
+# install-package-updater:
+# 	helm install updater
